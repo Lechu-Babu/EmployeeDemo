@@ -1,0 +1,5 @@
+/EmployeeDemo/bin
+/EmployeeDemo/obj
+/EmployeeDemo.Core/bin
+/EmployeeDemo.Core/obj
+.vs
