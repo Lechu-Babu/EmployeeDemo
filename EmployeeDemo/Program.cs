@@ -1,6 +1,9 @@
 using EmployeeDemo;
+using EmployeeDemo.Core.Converters;
+using EmployeeDemo.Core.DTOs;
 using EmployeeDemo.Core.Repositories;
 using EmployeeDemo.Core.Services;
+using EmployeeDemo.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +18,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'EmployeeDemo' not found.")));
 
+
+
+builder.Services.AddScoped<IConverter<EmployeeDto, Employee>, EmployeeConverter>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<IEmployeeRepository, EmployeeRepository>();
 

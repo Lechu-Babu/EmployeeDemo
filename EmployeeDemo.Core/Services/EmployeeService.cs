@@ -1,40 +1,25 @@
-﻿using EmployeeDemo.Core.DTOs;
+﻿using EmployeeDemo.Core.Converters;
+using EmployeeDemo.Core.DTOs;
 using EmployeeDemo.Core.Repositories;
 using EmployeeDemo.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeDemo.Core.Services
 {
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
-        public EmployeeService(IEmployeeRepository employeeRepository)
+        private readonly IConverter<EmployeeDto, Employee> _employeeConverter;
+        public EmployeeService(IEmployeeRepository employeeRepository, IConverter<EmployeeDto, Employee> Employeeconverter)
         {
             _employeeRepository = employeeRepository;
+            _employeeConverter = Employeeconverter;
         }
 
         public async Task<List<EmployeeDto>> GetAllEmployee()
         {
-            var result = await _employeeRepository.GetAllEmployee();
-            var response = new List<EmployeeDto>();
-            result?.ForEach(_employee =>
-            {
-                response.Add(new EmployeeDto
-                {
-                    FullName = _employee.FullName,
-                    EmployeeId = _employee.EmployeeId
-                });
-            });
-
+            var result = await _employeeRepository.GetAllEmployeeAsync();
+            var response = _employeeConverter.Convert(result);
             return response;
         }
 
@@ -46,10 +31,7 @@ namespace EmployeeDemo.Core.Services
                 throw new Exception();
             }
 
-            var result = new EmployeeDto();
-            result.FullName = employee.FullName;
-            result.EmployeeId = employee.EmployeeId;
-
+            var result = _employeeConverter.Convert(employee);
             return result;
 
         }
@@ -59,10 +41,10 @@ namespace EmployeeDemo.Core.Services
             var model = new Employee();
             model.FullName = employeeDto.FullName;
             model.EmployeeId = employeeDto.EmployeeId;
-            if (id == 0)
-            {
-                throw new Exception("Is shouldn't be zero value");
-            }
+            //if (id == 0)
+            //{
+            //    throw new Exception("Id shouldn't be zero value");
+            //}
             if (!_employeeRepository.EmployeeExists(id))
             {
                 throw new Exception("not exist");
@@ -78,14 +60,17 @@ namespace EmployeeDemo.Core.Services
             {
                 throw new Exception();
             }
-            var model = new Employee();
-            model.FullName = employee.FullName;
-            model.Designation = employee.Designation;
-            var result = await _employeeRepository.PostEmployee(model);
-            var response = new EmployeeDto();
-            response.FullName = result.FullName;
-            response.EmployeeId = result.EmployeeId;
-            return response;            
+            //var model = new Employee();
+            //model.FullName = employee.FullName;
+            //model.Designation = employee.Designation;
+
+            //var converter = new DtoToModelConverter();
+            //var model = converter.Convert(employee);
+
+
+            var result = await _employeeRepository.PostEmployee(_employeeConverter.Convert(employee));
+            var response = _employeeConverter.Convert(result);
+            return response;
         }
 
         public async Task DeleteEmployee(int id)

@@ -10,7 +10,7 @@ namespace EmployeeDemo.Core.Repositories
 {
     public interface IEmployeeRepository
     {
-        Task<List<Employee>> GetAllEmployee();
+        Task<List<Employee>> GetAllEmployeeAsync();
         Task<Employee> GetEmployee(int id);
         Task PutEmployee(int id, Employee employee);
         Task<Employee> PostEmployee(Employee employee);

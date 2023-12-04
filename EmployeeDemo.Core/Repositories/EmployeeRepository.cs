@@ -16,7 +16,7 @@ namespace EmployeeDemo.Core.Repositories
         {
             _context = context;
         }
-        public async Task<List<Employee>> GetAllEmployee()
+        public async Task<List<Employee>> GetAllEmployeeAsync()
         {
             return await _context.Employees.ToListAsync();
         }
